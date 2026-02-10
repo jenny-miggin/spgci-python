@@ -1742,7 +1742,6 @@ class EUGasAnalytics:
             paginate=paginate,
         )
         return response
-    
 
     def get_supply_demand_short_term_forecast(
         self,
@@ -2092,7 +2091,6 @@ class EUGasAnalytics:
             paginate=paginate,
         )
         return response
-    
 
     def get_daily_country_overview(
         self,
@@ -2261,8 +2259,6 @@ class EUGasAnalytics:
         )
         return response
 
-
-    
     @staticmethod
     def _convert_to_df(resp: Response) -> pd.DataFrame:
         j = resp.json()

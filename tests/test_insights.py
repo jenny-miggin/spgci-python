@@ -154,7 +154,7 @@ class InsightsTest(unittest.TestCase):
         df = cast(
             DataFrame,
             self.ni.get_heards(
-                sector='Agriculture',
+                sector="Agriculture",
                 strip_html=True,
             ),
         )
@@ -165,7 +165,7 @@ class InsightsTest(unittest.TestCase):
         df = cast(
             DataFrame,
             self.ni.get_heards(
-                sector=['Agriculture','Coal','EnergyTransition'],
+                sector=["Agriculture", "Coal", "EnergyTransition"],
                 strip_html=True,
             ),
         )

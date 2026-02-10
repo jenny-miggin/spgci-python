@@ -23,6 +23,7 @@ from enum import Enum
 from datetime import datetime, date
 import warnings
 
+
 # deprecated:: 0.0.60
 # Use `AmericasGas` instead.
 class NANaturalGasAnalytics:

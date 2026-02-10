@@ -9114,7 +9114,6 @@ class LNGGlobalAnalytics:
             paginate=paginate,
         )
         return response
-    
 
     def get_demand_forecast_short_term_current(
         self,
@@ -9599,7 +9598,7 @@ class LNGGlobalAnalytics:
             paginate=paginate,
         )
         return response
-    
+
     def get_events_bunkering(
         self,
         *,

@@ -17,10 +17,7 @@ jobs:
 
       - run:
           name: Install Poetry
-          command: |
-            curl -sSL https://install.python-poetry.org | python3 -
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >> $BASH_ENV
-            source $BASH_ENV
+          command: pip install poetry
 
       - run:
           name: Install Dependencies
@@ -56,21 +53,18 @@ jobs:
 
   test-with-integration:
     docker:
-      - image: cimg/python:3.13
+      - image: cimg/python:3.12
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - poetry-deps-v1-3.13-{{ checksum "pyproject.toml" }}
-            - poetry-deps-v1-3.13-
+            - poetry-deps-v1-3.12-{{ checksum "pyproject.toml" }}
+            - poetry-deps-v1-3.12-
 
       - run:
           name: Install Poetry
-          command: |
-            curl -sSL https://install.python-poetry.org | python3 -
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >> $BASH_ENV
-            source $BASH_ENV
+          command: pip install poetry
 
       - run:
           name: Install Dependencies
@@ -99,7 +93,7 @@ workflows:
       - test:
           matrix:
             parameters:
-              python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+              python-version: ["3.9", "3.10", "3.11", "3.12"]
 
       # Uncomment to run integration tests when credentials are available
       # - test-with-integration:

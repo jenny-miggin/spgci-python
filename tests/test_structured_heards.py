@@ -38,4 +38,3 @@ class StructuredHeardsTest(unittest.TestCase):
             filter_exp='Market IN ("Americas crude oil") and heard_type: "Trade"',
         )
         self.assertGreater(len(sh), 1)  # type: ignore
-

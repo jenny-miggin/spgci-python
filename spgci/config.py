@@ -15,6 +15,7 @@
 """
 Configure SPGCI settings
 """
+
 import os
 from typing import Dict, Union, Optional
 from requests.auth import AuthBase

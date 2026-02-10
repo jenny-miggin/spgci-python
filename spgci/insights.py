@@ -28,20 +28,20 @@ import html
 
 class Insights:
     """
-    Platts Insights.
+     Platts Insights.
 
-    Includes
-    --------
-    ``ContentType`` enum for ``content_type`` for the ``get_stories`` method.\n
-    ``SubscriberNotesContentType`` enum for ``content_type`` for the ``get_subscriber_notes`` method.\n
-    ``get_stories`` get articles across all content types.\n
-    ``get_top_news`` get articles that are considered "Top News".\n
-    ``get_latest_news`` get articles that are considered "Latest News".\n
-    ``get_spotlights`` get articles that are considered "Spotlights".\n
-   ``get_heards`` get heards, assessments summaries, market information summaries and tenders.\n
-    ``get_subscriber_notes`` get subscriber notes.\n
-    ``get_content`` get insights by ID.\n
-    ``get_packages`` get package content from the /v1/search/packages endpoint.\n
+     Includes
+     --------
+     ``ContentType`` enum for ``content_type`` for the ``get_stories`` method.\n
+     ``SubscriberNotesContentType`` enum for ``content_type`` for the ``get_subscriber_notes`` method.\n
+     ``get_stories`` get articles across all content types.\n
+     ``get_top_news`` get articles that are considered "Top News".\n
+     ``get_latest_news`` get articles that are considered "Latest News".\n
+     ``get_spotlights`` get articles that are considered "Spotlights".\n
+    ``get_heards`` get heards, assessments summaries, market information summaries and tenders.\n
+     ``get_subscriber_notes`` get subscriber notes.\n
+     ``get_content`` get insights by ID.\n
+     ``get_packages`` get package content from the /v1/search/packages endpoint.\n
 
     """
 
@@ -1080,7 +1080,9 @@ class Insights:
             path=f"{self._path}{path}",
             params=params,
             raw=raw,
-            paginate_fn=lambda resp: type('NoPaginator', (), {'has_more_pages': False})(),
+            paginate_fn=lambda resp: type(
+                "NoPaginator", (), {"has_more_pages": False}
+            )(),
             df_fn=self._content_to_df,
         )
 
@@ -1094,7 +1096,9 @@ class Insights:
                     filename = None
                     if "filename=" in cd:
                         try:
-                            filename = cd.split("filename=")[-1].strip().strip('"').strip("'")
+                            filename = (
+                                cd.split("filename=")[-1].strip().strip('"').strip("'")
+                            )
                         except Exception:
                             filename = None
 
@@ -1112,7 +1116,7 @@ class Insights:
             return result
 
         return result
-    
+
     def get_packages(
         self,
         *,
@@ -1139,7 +1143,7 @@ class Insights:
         updated_date_gte: Optional[datetime] = None,
         updated_date_lt: Optional[datetime] = None,
         updated_date_lte: Optional[datetime] = None,
-        field: Optional[str]= None,
+        field: Optional[str] = None,
         strip_html: bool = False,
         filter_exp: Optional[str] = None,
         page: int = 1,
@@ -1263,4 +1267,3 @@ class Insights:
             paginate_fn=self._paginate,
             df_fn=partial(self._to_df, strip_html=strip_html),
         )
-

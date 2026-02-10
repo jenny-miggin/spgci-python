@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Module to handle api request"""
+
 import requests
 import spgci.config
 from spgci.auth import get_token
@@ -144,7 +145,7 @@ def get_data(
     content_type = response.headers.get("content-type", "").lower()
     if "application/json" not in content_type and not content_type.startswith("text/"):
         return response
-    
+
     df: DataFrame = df_fn(response)
     pagination = paginate_fn(response)
 

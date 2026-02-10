@@ -23,12 +23,13 @@ import pandas as pd
 from dateutil.parser import parse
 from typing import Literal
 
+
 class AmericasGas:
 
     _datasets = Literal[
         "reference-data-pipeline-flows",
         "reference-data-geography",
-        "pipeline-flows", 
+        "pipeline-flows",
         "modeled-demand-actual",
         "natural-gas-production",
         "population-weighted-weather",
@@ -48,14 +49,11 @@ class AmericasGas:
         "regional-summaries-flowdata",
         "storage-data",
         "pipeline-flows-essentials-delta",
-        "pipeline-flows-essentials-history"
+        "pipeline-flows-essentials-history",
     ]
-    
+
     def get_unique_values(
-        self,
-        dataset: _datasets,
-        columns: Optional[Union[list[str], str]],
-        **filters
+        self, dataset: _datasets, columns: Optional[Union[list[str], str]], **filters
     ) -> DataFrame:
         """
         Returns unique values for the specified columns in a given Americas Gas dataset.
@@ -92,47 +90,67 @@ class AmericasGas:
             "gas-quality-data": "/analytics/gas/na-gas/v1/gas-quality-data",
             "notices-data": "/analytics/gas/na-gas/v1/notices-data",
             "tariff-rate-data": "/analytics/gas/na-gas/v1/tariff-rate-data",
-            "index-of-customer-data" : "/analytics/gas/na-gas/v1/index-of-customer-data",
-            "production-oil-data" : "/analytics/gas/na-gas/v1/production-oil-data",
-            "facility-flow-data" : "/analytics/gas/na-gas/v1/facility-flow-data",
-            "market-balances-data" : "/analytics/gas/na-gas/v1/market-balances-data",
-            "regional-summaries-flow-data" : "/analytics/gas/na-gas/v1/regional-summaries-flow-data",
-            "storage-data" : "/analytics/gas/na-gas/v1/storage-data",
+            "index-of-customer-data": "/analytics/gas/na-gas/v1/index-of-customer-data",
+            "production-oil-data": "/analytics/gas/na-gas/v1/production-oil-data",
+            "facility-flow-data": "/analytics/gas/na-gas/v1/facility-flow-data",
+            "market-balances-data": "/analytics/gas/na-gas/v1/market-balances-data",
+            "regional-summaries-flow-data": "/analytics/gas/na-gas/v1/regional-summaries-flow-data",
+            "storage-data": "/analytics/gas/na-gas/v1/storage-data",
             "pipeline-flows-essentials-delta": "/analytics/gas/na-gas/v1/pipeline-flows-essentials-delta",
-            "pipeline-flows-essentials-history": "/analytics/gas/na-gas/v1/pipeline-flows-essentials-history"
-            
+            "pipeline-flows-essentials-history": "/analytics/gas/na-gas/v1/pipeline-flows-essentials-history",
         }
 
         if dataset not in dataset_to_path:
             valid = "\n".join(dataset_to_path.keys())
-            raise ValueError(
-                f"Dataset '{dataset}' not found. Valid datasets:\n{valid}"
-            )
+            raise ValueError(f"Dataset '{dataset}' not found. Valid datasets:\n{valid}")
 
         path = dataset_to_path[dataset]
         col_value = ", ".join(columns) if isinstance(columns, list) else columns or ""
         params = {"GroupBy": col_value, "pageSize": 5000}
         if filters:
             from .utilities import build_filter_expression_with_strategy
-            params["filter"] = build_filter_expression_with_strategy(filters, strategy="platts")
+
+            params["filter"] = build_filter_expression_with_strategy(
+                filters, strategy="platts"
+            )
 
         def to_df(resp: Response):
             j = resp.json()
             df = pd.json_normalize(j["aggResultValue"])
-            columns_dt = ["lastModifiedDate", "flowDate", "forecastDate", "postingDatetime",
-            "createDate", "measurementDate", "effectiveDate", "endDate",
-            "validFrom", "validTo", "dateEffective", "dateRetire", "dateIssued",
-            "date", "contractStartDate", "contractEndDate", "inServiceDate",
-            "projectCreatedDate", "projectUpdatedDate", "preFileDate",
-            "projectFileDate", "projectApprovalDate", "componentCreateDate"]
+            columns_dt = [
+                "lastModifiedDate",
+                "flowDate",
+                "forecastDate",
+                "postingDatetime",
+                "createDate",
+                "measurementDate",
+                "effectiveDate",
+                "endDate",
+                "validFrom",
+                "validTo",
+                "dateEffective",
+                "dateRetire",
+                "dateIssued",
+                "date",
+                "contractStartDate",
+                "contractEndDate",
+                "inServiceDate",
+                "projectCreatedDate",
+                "projectUpdatedDate",
+                "preFileDate",
+                "projectFileDate",
+                "projectApprovalDate",
+                "componentCreateDate",
+            ]
 
             for c in columns_dt:
                 if c in df.columns:
-                    df[c] = pd.to_datetime(df[c], utc=True, format="ISO8601", errors="coerce")
+                    df[c] = pd.to_datetime(
+                        df[c], utc=True, format="ISO8601", errors="coerce"
+                    )
             return df
 
         return get_data(path, params, to_df, paginate=True)
-    
 
     def get_reference_data_geography(
         self,
@@ -262,7 +280,6 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-
 
     def get_reference_data_pipeline_flows(
         self,
@@ -875,8 +892,7 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
-    
+
     def get_pipeline_flows_essentials_delta(
         self,
         *,
@@ -987,15 +1003,21 @@ class AmericasGas:
 
         filter_params.append(list_to_filter("validFrom", valid_from))
 
-        filter_params.append(list_to_filter("componentCreateDate", component_create_date))
+        filter_params.append(
+            list_to_filter("componentCreateDate", component_create_date)
+        )
         if component_create_date_gt is not None:
             filter_params.append(f'componentCreateDate > "{component_create_date_gt}"')
         if component_create_date_gte is not None:
-            filter_params.append(f'componentCreateDate >= "{component_create_date_gte}"')
+            filter_params.append(
+                f'componentCreateDate >= "{component_create_date_gte}"'
+            )
         if component_create_date_lt is not None:
             filter_params.append(f'componentCreateDate < "{component_create_date_lt}"')
         if component_create_date_lte is not None:
-            filter_params.append(f'componentCreateDate <= "{component_create_date_lte}"')
+            filter_params.append(
+                f'componentCreateDate <= "{component_create_date_lte}"'
+            )
 
         filter_params.append(list_to_filter("lastModifiedDate", last_modified_date))
         if last_modified_date_gt is not None:
@@ -1037,7 +1059,9 @@ class AmericasGas:
         if design_capacity_lte is not None:
             filter_params.append(f'designCapacity <= "{design_capacity_lte}"')
 
-        filter_params.append(list_to_filter("operationalCapacity", operational_capacity))
+        filter_params.append(
+            list_to_filter("operationalCapacity", operational_capacity)
+        )
         if operational_capacity_gt is not None:
             filter_params.append(f'operationalCapacity > "{operational_capacity_gt}"')
         if operational_capacity_gte is not None:
@@ -1047,15 +1071,25 @@ class AmericasGas:
         if operational_capacity_lte is not None:
             filter_params.append(f'operationalCapacity <= "{operational_capacity_lte}"')
 
-        filter_params.append(list_to_filter("operationallyAvailable", operationally_available))
+        filter_params.append(
+            list_to_filter("operationallyAvailable", operationally_available)
+        )
         if operationally_available_gt is not None:
-            filter_params.append(f'operationallyAvailable > "{operationally_available_gt}"')
+            filter_params.append(
+                f'operationallyAvailable > "{operationally_available_gt}"'
+            )
         if operationally_available_gte is not None:
-            filter_params.append(f'operationallyAvailable >= "{operationally_available_gte}"')
+            filter_params.append(
+                f'operationallyAvailable >= "{operationally_available_gte}"'
+            )
         if operationally_available_lt is not None:
-            filter_params.append(f'operationallyAvailable < "{operationally_available_lt}"')
+            filter_params.append(
+                f'operationallyAvailable < "{operationally_available_lt}"'
+            )
         if operationally_available_lte is not None:
-            filter_params.append(f'operationallyAvailable <= "{operationally_available_lte}"')
+            filter_params.append(
+                f'operationallyAvailable <= "{operationally_available_lte}"'
+            )
 
         filter_params = [fp for fp in filter_params if fp != ""]
 
@@ -1197,7 +1231,9 @@ class AmericasGas:
         if design_capacity_lte is not None:
             filter_params.append(f'designCapacity <= "{design_capacity_lte}"')
 
-        filter_params.append(list_to_filter("operationalCapacity", operational_capacity))
+        filter_params.append(
+            list_to_filter("operationalCapacity", operational_capacity)
+        )
         if operational_capacity_gt is not None:
             filter_params.append(f'operationalCapacity > "{operational_capacity_gt}"')
         if operational_capacity_gte is not None:
@@ -1207,28 +1243,44 @@ class AmericasGas:
         if operational_capacity_lte is not None:
             filter_params.append(f'operationalCapacity <= "{operational_capacity_lte}"')
 
-        filter_params.append(list_to_filter("operationallyAvailable", operationally_available))
+        filter_params.append(
+            list_to_filter("operationallyAvailable", operationally_available)
+        )
         if operationally_available_gt is not None:
-            filter_params.append(f'operationallyAvailable > "{operationally_available_gt}"')
+            filter_params.append(
+                f'operationallyAvailable > "{operationally_available_gt}"'
+            )
         if operationally_available_gte is not None:
-            filter_params.append(f'operationallyAvailable >= "{operationally_available_gte}"')
+            filter_params.append(
+                f'operationallyAvailable >= "{operationally_available_gte}"'
+            )
         if operationally_available_lt is not None:
-            filter_params.append(f'operationallyAvailable < "{operationally_available_lt}"')
+            filter_params.append(
+                f'operationallyAvailable < "{operationally_available_lt}"'
+            )
         if operationally_available_lte is not None:
-            filter_params.append(f'operationallyAvailable <= "{operationally_available_lte}"')
+            filter_params.append(
+                f'operationallyAvailable <= "{operationally_available_lte}"'
+            )
 
         filter_params.append(list_to_filter("interruptibleFlow", interruptible_flow))
         filter_params.append(list_to_filter("dataSource", data_source))
         filter_params.append(list_to_filter("dataActive", data_active))
-        filter_params.append(list_to_filter("componentCreateDate", component_create_date))
+        filter_params.append(
+            list_to_filter("componentCreateDate", component_create_date)
+        )
         if component_create_date_gt is not None:
             filter_params.append(f'componentCreateDate > "{component_create_date_gt}"')
         if component_create_date_gte is not None:
-            filter_params.append(f'componentCreateDate >= "{component_create_date_gte}"')
+            filter_params.append(
+                f'componentCreateDate >= "{component_create_date_gte}"'
+            )
         if component_create_date_lt is not None:
             filter_params.append(f'componentCreateDate < "{component_create_date_lt}"')
         if component_create_date_lte is not None:
-            filter_params.append(f'componentCreateDate <= "{component_create_date_lte}"')
+            filter_params.append(
+                f'componentCreateDate <= "{component_create_date_lte}"'
+            )
 
         filter_params.append(list_to_filter("validTo", valid_to))
         if valid_to_gt is not None:
@@ -1628,7 +1680,6 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
 
     def get_population_weighted_weather(
         self,
@@ -1898,7 +1949,7 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
+
     def get_outlook_production_play(
         self,
         *,
@@ -2071,7 +2122,6 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
 
     def get_outlook_marketbalances_prices(
         self,
@@ -2715,7 +2765,7 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
+
     def get_pipeline_profiles_data(
         self,
         *,
@@ -5789,7 +5839,7 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
+
     def get_modeled_demand_forecast(
         self,
         *,
@@ -7139,7 +7189,6 @@ class AmericasGas:
         )
         return response
 
-
     def get_index_of_customer_data(
         self,
         *,
@@ -7403,7 +7452,6 @@ class AmericasGas:
         )
         return response
 
-
     def get_production_oil_data(
         self,
         *,
@@ -7590,7 +7638,6 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-
 
     def get_facility_flow_data(
         self,
@@ -7904,7 +7951,7 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
+
     def get_market_balances_data(
         self,
         *,
@@ -8063,7 +8110,6 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-
 
     def get_regional_summaries_flowdata(
         self,
@@ -8239,7 +8285,6 @@ class AmericasGas:
             paginate=paginate,
         )
         return response
-    
 
     def get_storage_data(
         self,
@@ -8416,7 +8461,6 @@ class AmericasGas:
         )
         return response
 
-
     @staticmethod
     def _convert_to_df(resp: Response) -> pd.DataFrame:
         """
@@ -8436,12 +8480,29 @@ class AmericasGas:
         df = pd.json_normalize(j["results"])
 
         date_columns = [
-            "lastModifiedDate", "flowDate", "forecastDate", "postingDatetime",
-            "createDate", "measurementDate", "effectiveDate", "endDate",
-            "validFrom", "validTo", "dateEffective", "dateRetire", "dateIssued",
-            "date", "contractStartDate", "contractEndDate", "inServiceDate",
-            "projectCreatedDate", "projectUpdatedDate", "preFileDate",
-            "projectFileDate", "projectApprovalDate", "componentCreateDate"
+            "lastModifiedDate",
+            "flowDate",
+            "forecastDate",
+            "postingDatetime",
+            "createDate",
+            "measurementDate",
+            "effectiveDate",
+            "endDate",
+            "validFrom",
+            "validTo",
+            "dateEffective",
+            "dateRetire",
+            "dateIssued",
+            "date",
+            "contractStartDate",
+            "contractEndDate",
+            "inServiceDate",
+            "projectCreatedDate",
+            "projectUpdatedDate",
+            "preFileDate",
+            "projectFileDate",
+            "projectApprovalDate",
+            "componentCreateDate",
         ]
 
         # ISO8601 format

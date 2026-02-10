@@ -50,12 +50,14 @@ class OilNGLAnalytics:
         """
         Get unique values for specified columns in a dataset, optionally filtered by an expression.
 
-        This method is crucial for data discovery and validation before making actual data queries.
-        Use this to understand what values are available in the dataset and what combinations
-        actually exist before attempting to filter your main data queries.
+        This method is crucial for data discovery and validation before making
+        actual data queries. Use this to understand what values are available
+        in the dataset and what combinations actually exist before attempting
+        to filter your main data queries.
 
         Args:
-            dataset (str): The dataset name converted from method name using kebab-case format:
+            dataset (str): The dataset name converted from method name using
+                kebab-case format:
                 - get_region_supply_demand_balance → "region-supply-demand-balance"
                 - get_demand_latest → "demand-latest"
                 - get_cargo_flows → "cargo-flows"
@@ -63,12 +65,13 @@ class OilNGLAnalytics:
                 - Use camelCase format: ["commodity", "region", "outlookHorizon"]
                 - Can be single string: "commodity"
                 - Can be multiple columns: ["commodity", "region", "outlookHorizon"]
-            filter_exp (str, optional): Filter expression to limit results to specific subsets.
-                Use ci.utilities.build_filter_expression() to construct this properly.
+            filter_exp (str, optional): Filter expression to limit results to
+                specific subsets. Use ci.utilities.build_filter_expression()
+                to construct this properly.
 
         Returns:
-            pd.DataFrame: DataFrame with unique combinations of the specified columns,
-            optionally filtered by the provided expression.
+            pd.DataFrame: DataFrame with unique combinations of the specified
+            columns, optionally filtered by the provided expression.
 
         Example Usage:
             # Step 1: Get all available commodities

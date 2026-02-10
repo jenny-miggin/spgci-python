@@ -107,25 +107,33 @@ class EUGasAnalytics:
          gas_day_lte: Optional[date], optional
              filter by `gas_day <= x`, by default None
          secondary_flow_type: Optional[Union[list[str], Series[str], str]]
-             The secondary type of gas flow, such as production or storage., by default None
+             The secondary type of gas flow, such as production or storage.,
+             by default None
          detailed_flow_type: Optional[Union[list[str], Series[str], str]]
-             The detailed or specific type of gas flow, such as landing point or LNG terminal., by default None
+             The detailed or specific type of gas flow, such as landing point or
+             LNG terminal., by default None
          country: Optional[Union[list[str], Series[str], str]]
              The country associated with the gas data., by default None
          storage_system_operator: Optional[Union[list[str], Series[str], str]]
-             The system operator responsible for the storage facility., by default None
+             The system operator responsible for the storage facility.,
+             by default None
          name: Optional[Union[list[str], Series[str], str]]
              The name or identifier of the storage facility., by default None
          gas_type: Optional[Union[list[str], Series[str], str]]
-             The type of gas stored in the facility, such as H-gas (high-calorific gas)., by default None
+             The type of gas stored in the facility, such as H-gas
+             (high-calorific gas)., by default None
          source: Optional[Union[list[str], Series[str], str]]
-             The source or origin of the gas stored in the facility, such as a specific gas facility or company., by default None
+             The source or origin of the gas stored in the facility, such as a
+             specific gas facility or company., by default None
          summable: Optional[Union[list[str], Series[str], str]]
-             Indicates whether the gas flows in the storage facility can be summed or aggregated., by default None
+             Indicates whether the gas flows in the storage facility can be
+             summed or aggregated., by default None
          uom: Optional[Union[list[str], Series[str], str]]
-             The unit of measurement used for quantifying the gas flows in the storage facility, such as GWH (gigawatt hours)., by default None
+             The unit of measurement used for quantifying the gas flows in the
+             storage facility, such as GWH (gigawatt hours)., by default None
          modified_date: Optional[datetime], optional
-             The date and time when the gas data field was last modified or updated., by default None
+             The date and time when the gas data field was last modified or
+             updated., by default None
          modified_date_gt: Optional[datetime], optional
              filter by `modified_date > x`, by default None
          modified_date_gte: Optional[datetime], optional
@@ -135,7 +143,8 @@ class EUGasAnalytics:
          modified_date_lte: Optional[datetime], optional
              filter by `modified_date <= x`, by default None
          default_source: Optional[Union[list[str], Series[str], str]]
-             Indicates whether the specified storage facility is the default source for gas flow data., by default None
+             Indicates whether the specified storage facility is the default
+             source for gas flow data., by default None
          filter_exp: Optional[str] = None,
          page: int = 1,
          page_size: int = 1000,

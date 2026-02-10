@@ -69,7 +69,8 @@ class AmericasGas:
         -------
         DataFrame
             DataFrame of unique values for the specified columns.
-            Examples
+
+        Examples
         --------
         >>> na.get_unique_values("pipeline-flows-essentials-history", "locationType", pipelineId=1)
         >>> na.get_unique_values("pipeline-flows", ["flowDate", "pipelineId"], flowDate="2025-11-26")

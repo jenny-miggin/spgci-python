@@ -1,0 +1,108 @@
+version: 2.1
+
+jobs:
+  test:
+    parameters:
+      python-version:
+        type: string
+    docker:
+      - image: cimg/python:<<parameters.python-version>>
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - poetry-deps-v1-<<parameters.python-version>>-{{ checksum "pyproject.toml" }}
+            - poetry-deps-v1-<<parameters.python-version>>-
+
+      - run:
+          name: Install Poetry
+          command: |
+            curl -sSL https://install.python-poetry.org | python3 -
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+
+      - run:
+          name: Install Dependencies
+          command: |
+            poetry install --with dev
+
+      - save_cache:
+          key: poetry-deps-v1-<<parameters.python-version>>-{{ checksum "pyproject.toml" }}
+          paths:
+            - ~/.cache/pypoetry/virtualenvs
+
+      - run:
+          name: Run Black (Code Formatter Check)
+          command: |
+            poetry run black --check .
+
+      - run:
+          name: Run Ruff (Linter)
+          command: |
+            poetry run ruff check .
+
+      - run:
+          name: Run Tests (Unit Tests Only)
+          command: |
+            poetry run pytest -v -m "not integtest" --cov=spgci --cov-report=xml --cov-report=term
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: coverage.xml
+          destination: coverage-reports
+
+  test-with-integration:
+    docker:
+      - image: cimg/python:3.13
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - poetry-deps-v1-3.13-{{ checksum "pyproject.toml" }}
+            - poetry-deps-v1-3.13-
+
+      - run:
+          name: Install Poetry
+          command: |
+            curl -sSL https://install.python-poetry.org | python3 -
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+
+      - run:
+          name: Install Dependencies
+          command: |
+            poetry install --with dev
+
+      - run:
+          name: Run All Tests (Including Integration)
+          command: |
+            poetry run pytest -v --cov=spgci --cov-report=xml --cov-report=term
+          environment:
+            SPGCI_USERNAME: ${SPGCI_USERNAME}
+            SPGCI_PASSWORD: ${SPGCI_PASSWORD}
+            SPGCI_APPKEY: ${SPGCI_APPKEY}
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: coverage.xml
+          destination: coverage-reports
+
+workflows:
+  test-workflow:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+      # Uncomment to run integration tests when credentials are available
+      # - test-with-integration:
+      #     requires:
+      #       - test
+      #     context: spgci-credentials  # Create a context in CircleCI with your credentials
